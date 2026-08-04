@@ -1,0 +1,94 @@
+name: CareerPilot CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    name: Frontend quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Run ESLint
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Build production frontend
+        working-directory: frontend
+        run: npm run build
+
+  backend:
+    name: Backend quality
+    runs-on: ubuntu-latest
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/backend/Gemfile
+      RAILS_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/careerpilot_test
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: careerpilot_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d careerpilot_test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install operating-system packages
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev libvips
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.8
+          bundler-cache: true
+
+      - name: Prepare test database
+        working-directory: backend
+        run: bin/rails db:prepare
+
+      - name: Run Rails tests
+        working-directory: backend
+        run: bin/rails test
+
+      - name: Run RuboCop
+        working-directory: backend
+        run: bin/rubocop
+
+      - name: Run Brakeman
+        working-directory: backend
+        run: bin/brakeman --no-pager
+
+      - name: Audit Ruby dependencies
+        working-directory: backend
+        run: bin/bundler-audit check --update
