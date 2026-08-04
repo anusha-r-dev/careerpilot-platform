@@ -73,9 +73,9 @@ jobs:
           ruby-version: 3.3.8
           bundler-cache: true
 
-      - name: Prepare test database
+      - name: Load test database schema
         working-directory: backend
-        run: bin/rails db:prepare
+        run: bin/rails db:schema:load
 
       - name: Run Rails tests
         working-directory: backend
