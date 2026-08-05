@@ -1,0 +1,23 @@
+name: hireflow
+
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: hireflow-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hireflow
+      POSTGRES_PASSWORD: hireflow_dev_password
+      POSTGRES_DB: hireflow_development
+    ports:
+      - "5433:5432"
+    volumes:
+      - hireflow_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hireflow -d hireflow_development"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  hireflow_postgres_data:

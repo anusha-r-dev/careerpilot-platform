@@ -1,0 +1,32 @@
+# macOS and editors
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+backend/config/master.key
+
+# React / Vite
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/*.local
+
+# Rails
+backend/log/*
+!backend/log/.keep
+backend/tmp/*
+!backend/tmp/.keep
+backend/storage/*
+!backend/storage/.keep
+backend/vendor/bundle/
+backend/.bundle/
+backend/coverage/
+
+# Test and tool output
+coverage/
+*.log

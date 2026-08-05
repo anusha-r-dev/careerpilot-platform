@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+# If running the rails server then create or migrate existing database
+if [[ " $* " == *" ./bin/rails server "* ]]; then
+  ./bin/rails db:prepare
+
+  if [ "${SEED_DEMO_DATA:-false}" = "true" ] && \
+    ! ./bin/rails runner 'exit(User.exists? ? 0 : 1)'; then
+    ./bin/rails db:seed
+  fi
+fi
+
+exec "${@}"

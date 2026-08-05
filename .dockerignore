@@ -1,0 +1,14 @@
+.git
+.github
+.DS_Store
+.env
+.env.*
+**/node_modules
+frontend/dist
+backend/config/master.key
+backend/log/*
+backend/tmp/*
+backend/storage/*
+backend/vendor/bundle
+backend/.bundle
+coverage
