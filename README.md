@@ -4,6 +4,13 @@ CareerPilot is a full-stack, multi-user job application organizer. It helps job 
 
 The project demonstrates a production-style React and Ruby on Rails architecture with role-based access, PostgreSQL persistence, secure cookie sessions, responsive interfaces, and automated tests.
 
+## Live website
+
+[Open CareerPilot](https://careerpilot-qdr0.onrender.com)
+
+The application runs on Render's free service tier, so the first request after
+a period of inactivity can take up to a minute while the service wakes up.
+
 ## Product overview
 
 ### Member workspace
